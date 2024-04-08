@@ -21,42 +21,23 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ...
+//                .csrf((csrf) -> csrf
+//                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+//                         //cookie .csrfTokenRepository(new CookieCsrfTokenRepository()) good .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+//                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .csrf((csrf) -> csrf
-                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                        .ignoringRequestMatchers("/*")
+                )
+                .addFilterAfter(
+                        new AuthFilter(),
+                        CsrfFilter.class
+                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll()
                 );
         return http.build();
     }
-}
 
-final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
-    private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
-
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
-
-        this.delegate.handle(request, response, csrfToken);
-    }
-
-    @Override
-    public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-
-        /*
-         * Javascript !!header!! is included, this value was taken from the cookie (javacript
-         * application flow), and is thus the raw token and requires no decoding.
-         */
-
-        if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
-            return super.resolveCsrfTokenValue(request, csrfToken);
-        }
-
-        /*
-         * "Normal" flow, the token value needs to be decoded
-         */
-
-        return this.delegate.resolveCsrfTokenValue(request, csrfToken);
-    }
 }
 
 

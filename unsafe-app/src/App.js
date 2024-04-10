@@ -7,6 +7,19 @@ function Home() {
 
   useEffect(() => {
     
+    // let fetchToken = async () => {
+    //   let response = await fetch('http://localhost:8090/get-token', {
+    //     method:'GET',
+    //     credentials:'include'
+    //   })
+    //   console.log("Resposne Cookies");
+    //   console.log(response.headers);
+
+    //   response = await response.json()
+    //   console.log("Fetched cookie");
+    //   console.log(response)
+    // }
+
     let fetchLogin = async () => {
       let response = await fetch('http://localhost:8090/login-test', {
         method:'GET'

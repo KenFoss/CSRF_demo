@@ -31,7 +31,9 @@ function Home() {
   const postData = () => {
     let fetchData = async () => {
       let response = await fetch('http://localhost:8090/post-example', {
-        method:'POST'
+        method:'POST',
+        credentials:'include',
+        body: "data"
       })
     }
     fetchData();

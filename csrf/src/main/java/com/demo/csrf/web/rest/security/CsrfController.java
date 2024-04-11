@@ -13,8 +13,6 @@ import java.util.Map;
 @RestController
 public class CsrfController {
 
-
-//    @CrossOrigin("http://localhost:3000")
     @GetMapping("/get-token")
     public ResponseEntity<Map<String, String>> getCsrfToken(HttpServletRequest request, CsrfToken csrfToken) {
         Map<String, String> responseMap = new HashMap<>();

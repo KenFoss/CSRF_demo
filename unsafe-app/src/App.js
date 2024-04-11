@@ -11,7 +11,8 @@ function Home() {
 
     let fetchLogin = async () => {
       let response = await fetch('http://localhost:8090/login-test', {
-        method:'GET'
+        method:'GET',
+        credentials:'include'
       })
     }
 

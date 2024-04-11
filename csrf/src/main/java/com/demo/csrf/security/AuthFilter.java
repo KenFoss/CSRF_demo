@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class AuthFilter extends GenericFilterBean {
-
 
     @Override
     public void doFilter(
@@ -31,9 +31,7 @@ public class AuthFilter extends GenericFilterBean {
         //ignore endpoints
         if(httpRequest.getRequestURI().equalsIgnoreCase("/login-test")) {
             isAuthenticated = true;
-        }
-
-        if (cookies != null) {
+        } else if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("test-session-id".equals(cookie.getName()) && "123456789".equals(cookie.getValue())) {
                     System.out.println("Session ID found!");

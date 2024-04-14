@@ -15,13 +15,12 @@ public class DataController {
     @GetMapping("/get-data")
     public ResponseEntity<Map<String, String>> getData() {
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("data", "some_data");
         return ResponseEntity.ok(responseMap);
     }
 
+    // Simple post endpoint to attack
     @PostMapping("/post-example")
     public String postExample(@RequestBody String requestBody) {
-        // Process the request body or perform any necessary operations here
         return "Data Posted Successfully";
     }
 

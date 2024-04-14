@@ -11,14 +11,19 @@ function Home() {
 
   useEffect(() => {
 
+    // Adds a session token (test-session-id) to browser cookies, mocks the JSON web token in a typical setup
+
     let fetchLogin = async () => {
       let response = await fetch('http://localhost:8090/login-test', {
         method:'GET',
         credentials:'include'
       })
-
+      
       setIsAuthenticated(true);
+
     }
+
+    setIsAuthenticated(true);
 
     try{
       fetchLogin();
@@ -29,7 +34,10 @@ function Home() {
   },[])
 
 
-  // Fetch the csrf token and set it for use in the application
+  // A post request requires extra layers of protection, with such a request
+  // assailants could delete user data, change passwords and perform other
+  // harmful actions
+
 
   useEffect(() => {
     let fetchCSRF = async () => {
@@ -62,8 +70,8 @@ function Home() {
         method:'POST',
         credentials:'include',
         body: "data",
-        headers: {
-          'X-CSRF-TOKEN' : csrfToken
+        headers:{
+          'X-CSRF-TOKEN':csrfToken
         }
       })
 
@@ -75,6 +83,7 @@ function Home() {
     <div>
       <h1>Welcome to A Sketchy App</h1>
       <button onClick={() => postData()}>post locally</button>
+      {/* This links to the evil.html script */}
       <a href="http://localhost:3001"> This looks completely safe!</a>
     </div>
   )

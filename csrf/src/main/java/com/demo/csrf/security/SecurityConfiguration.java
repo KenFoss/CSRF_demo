@@ -21,13 +21,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .csrf((csrf) -> csrf
-//                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
-//                         //cookie .csrfTokenRepository(new CookieCsrfTokenRepository()) good .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
-//                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .csrf((csrf) -> csrf
-                        .ignoringRequestMatchers("/*")
-                )
+                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                         //.csrfTokenRepository(new CookieCsrfTokenRepository())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .addFilterAfter(
                         new AuthFilter(),
                         CsrfFilter.class

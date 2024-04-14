@@ -8,12 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins= "*")
-@RestController("/data")
+@CrossOrigin(origins= {"http://localhost:3000","http://localhost:3001", "https://www.google.com"}, allowCredentials ="true")
+@RestController()
 public class DataController {
 
-
-    //    @CrossOrigin("http://localhost:3000")
     @GetMapping("/get-data")
     public ResponseEntity<Map<String, String>> getData() {
         Map<String, String> responseMap = new HashMap<>();

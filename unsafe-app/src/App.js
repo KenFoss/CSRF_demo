@@ -1,35 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [csrfToken, setCsrfToken] = useState('');
+
+  // Fetch the mock authenication session id
 
   useEffect(() => {
-    
-    // let fetchToken = async () => {
-    //   let response = await fetch('http://localhost:8090/get-token', {
-    //     method:'GET',
-    //     credentials:'include'
-    //   })
-    //   console.log("Resposne Cookies");
-    //   console.log(response.headers);
-
-    //   response = await response.json()
-    //   console.log("Fetched cookie");
-    //   console.log(response)
-    // }
 
     let fetchLogin = async () => {
       let response = await fetch('http://localhost:8090/login-test', {
-        method:'GET'
+        method:'GET',
+        credentials:'include'
       })
-      console.log("Resposne Cookies");
-      console.log(response.headers);
 
-      response = await response.json()
-      console.log("Fetched cookie");
-      console.log(response)
+      setIsAuthenticated(true);
     }
 
     try{
@@ -40,53 +28,54 @@ function Home() {
     
   },[])
 
+
+  // Fetch the csrf token and set it for use in the application
+
+  useEffect(() => {
+    let fetchCSRF = async () => {
+      let response = await fetch('http://localhost:8090/get-token', {
+        method:'GET',
+        credentials:'include'
+      })
+
+      response = await response.json()
+
+      setCsrfToken(response['token!']);
+    }
+    try{
+      if(isAuthenticated) {
+        fetchCSRF();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [isAuthenticated])
+
+  useEffect( () => {
+    console.log(csrfToken)
+  }, [csrfToken])
+
+
   const postData = () => {
     let fetchData = async () => {
       let response = await fetch('http://localhost:8090/post-example', {
-        method:'POST'
+        method:'POST',
+        credentials:'include',
+        body: "data",
+        headers: {
+          'X-CSRF-TOKEN' : csrfToken
+        }
       })
-      console.log("Resposne Cookies");
-      console.log(response.cookies);
 
-      response = await response.json()
-      console.log("Fetched cookie");
-      console.log(response)
     }
     fetchData();
   }
-
 
   return (
     <div>
       <h1>Welcome to A Sketchy App</h1>
       <button onClick={() => postData()}>post locally</button>
       <a href="http://localhost:3001"> This looks completely safe!</a>
-    </div>
-  )
-}
-
-function Post() {
-
-  useEffect(() => {  {
-    let fetchData = async () => {
-      let response = await fetch('http://localhost:8090/post-example', {
-        method:'POST'
-      })
-      console.log("Resposne Cookies");
-      console.log(response.cookies);
-
-      response = await response.json()
-      console.log("Fetched cookie");
-      console.log(response)
-    }
-    fetchData();
-  }}, [])
-
-
-
-  return(
-    <div>
-      <h1>Malicious Action Page</h1>
     </div>
   )
 }

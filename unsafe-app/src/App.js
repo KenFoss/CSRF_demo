@@ -20,6 +20,8 @@ function Home() {
       })
     }
 
+    setIsAuthenticated(true);
+
     try{
       fetchLogin();
     } catch (e) {
@@ -65,7 +67,10 @@ function Home() {
       let response = await fetch('http://localhost:8090/post-example', {
         method:'POST',
         credentials:'include',
-        body: "data"
+        body: "data",
+        headers:{
+          'X-CSRF-TOKEN':csrfToken
+        }
       })
     }
     fetchData();

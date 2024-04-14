@@ -1,9 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [csrfToken, setCsrfToken] = useState('');
+
+  // Fetch the mock authenication session id
 
   useEffect(() => {
 
@@ -28,6 +32,34 @@ function Home() {
   // assailants could delete user data, change passwords and perform other
   // harmful actions
 
+
+  // Fetch the csrf token and set it for use in the application
+
+  useEffect(() => {
+    let fetchCSRF = async () => {
+      let response = await fetch('http://localhost:8090/get-token', {
+        method:'GET',
+        credentials:'include'
+      })
+
+      response = await response.json()
+
+      setCsrfToken(response['token!']);
+    }
+    try{
+      if(isAuthenticated) {
+        fetchCSRF();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [isAuthenticated])
+
+  useEffect( () => {
+    console.log(csrfToken)
+  }, [csrfToken])
+
+
   const postData = () => {
     let fetchData = async () => {
       let response = await fetch('http://localhost:8090/post-example', {
@@ -39,39 +71,12 @@ function Home() {
     fetchData();
   }
 
-
   return (
     <div>
       <h1>Welcome to A Sketchy App</h1>
       <button onClick={() => postData()}>post locally</button>
       {/* This links to the evil.html script */}
       <a href="http://localhost:3001"> This looks completely safe!</a>
-    </div>
-  )
-}
-
-function Post() {
-
-  useEffect(() => {  {
-    let fetchData = async () => {
-      let response = await fetch('http://localhost:8090/post-example', {
-        method:'POST'
-      })
-      console.log("Resposne Cookies");
-      console.log(response.cookies);
-
-      response = await response.json()
-      console.log("Fetched cookie");
-      console.log(response)
-    }
-    fetchData();
-  }}, [])
-
-
-
-  return(
-    <div>
-      <h1>Malicious Action Page</h1>
     </div>
   )
 }

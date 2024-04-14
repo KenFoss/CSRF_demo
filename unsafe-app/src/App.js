@@ -18,6 +18,9 @@ function Home() {
         method:'GET',
         credentials:'include'
       })
+      
+      setIsAuthenticated(true);
+
     }
 
     setIsAuthenticated(true);
@@ -30,12 +33,11 @@ function Home() {
     
   },[])
 
+
   // A post request requires extra layers of protection, with such a request
   // assailants could delete user data, change passwords and perform other
   // harmful actions
 
-
-  // Fetch the csrf token and set it for use in the application
 
   useEffect(() => {
     let fetchCSRF = async () => {
@@ -72,6 +74,7 @@ function Home() {
           'X-CSRF-TOKEN':csrfToken
         }
       })
+
     }
     fetchData();
   }

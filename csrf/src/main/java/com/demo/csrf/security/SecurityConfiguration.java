@@ -21,10 +21,10 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Forgoe CSRF protection and make our backend vulnerable
                 .csrf((csrf) -> csrf
-                        .ignoringRequestMatchers("/*")
-                )
+                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                         //.csrfTokenRepository(new CookieCsrfTokenRepository())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .addFilterAfter(
                         new AuthFilter(),
                         CsrfFilter.class

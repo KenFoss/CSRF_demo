@@ -1,5 +1,7 @@
 package com.demo.csrf.security;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -10,8 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.*;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 
+import java.io.IOException;
 import java.util.function.Supplier;
 
 @Configuration
@@ -22,9 +26,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf((csrf) -> csrf
-                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
-                         //.csrfTokenRepository(new CookieCsrfTokenRepository())
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+//                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                                .ignoringRequestMatchers("/login-test")
+                )
                 .addFilterAfter(
                         new AuthFilter(),
                         CsrfFilter.class
@@ -36,6 +42,5 @@ public class SecurityConfiguration {
     }
 
 }
-
 
 

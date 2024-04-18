@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class Authenticate {
 
 
-    @GetMapping("/login-test")
+    @PostMapping ("/login-test")
     public ResponseEntity<Map<String,String>> login(HttpServletResponse response) {
 
         Map<String,String> responseMap = new HashMap<>();

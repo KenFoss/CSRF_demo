@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
 function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [csrfToken, setCsrfToken] = useState('');
 
   // Fetch the mock authenication session id
 
@@ -15,12 +13,10 @@ function Home() {
 
     let fetchLogin = async () => {
       let response = await fetch('http://localhost:8090/login-test', {
-        method:'GET',
+        method:'POST',
         credentials:'include'
       })
     }
-
-    setIsAuthenticated(true);
 
     try{
       fetchLogin();
@@ -30,49 +26,29 @@ function Home() {
     
   },[])
 
-  // A post request requires extra layers of protection, with such a request
-  // assailants could delete user data, change passwords and perform other
-  // harmful actions
-
-
-  // Fetch the csrf token and set it for use in the application
-
-  useEffect(() => {
-    let fetchCSRF = async () => {
-      let response = await fetch('http://localhost:8090/get-token', {
-        method:'GET',
-        credentials:'include'
-      })
-
-      response = await response.json()
-
-      setCsrfToken(response['token!']);
-    }
-    try{
-      if(isAuthenticated) {
-        fetchCSRF();
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, [isAuthenticated])
-
-  useEffect( () => {
-    console.log(csrfToken)
-  }, [csrfToken])
-
 
   const postData = () => {
     let fetchData = async () => {
+      let csrfToken='';
+
+      // cookies return as a string, we need to filter for the desired token
+      let cookieList = document.cookie.split('; ')
+      cookieList = cookieList.filter( (x) => x.split('=')[0] == 'XSRF-TOKEN')
+      // set the token for use in post requests
+      if(cookieList.length != 0) {
+        csrfToken = cookieList[0].split('=')[1]
+      }
+
       let response = await fetch('http://localhost:8090/post-example', {
         method:'POST',
         credentials:'include',
         body: "data",
         headers:{
-          'X-CSRF-TOKEN':csrfToken
+          'X-XSRF-TOKEN':csrfToken
         }
       })
     }
+
     fetchData();
   }
 
